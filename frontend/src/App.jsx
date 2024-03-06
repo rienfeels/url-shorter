@@ -1,4 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import AddLink from "../../AddLink";
+import GetLinks from "../../GetLinks";
 // import './App.css'
 
 const App = () => {
@@ -20,7 +23,7 @@ const App = () => {
           long_url: longUrl,
           short_url: "",
           title: "",
-          user_id: 0,
+          user_id: 1,
         }),
       });
 
@@ -42,7 +45,12 @@ const App = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setLinks(data.links);
+        // Make sure data.links is an array before setting it
+        if (Array.isArray(data.links)) {
+          setLinks(data.links);
+        } else {
+          console.error("Invalid data format received from the server:", data);
+        }
       } else {
         const errorData = await response.json();
         alert(`Error: ${errorData.detail}`);
@@ -54,30 +62,40 @@ const App = () => {
 
   return (
     <div>
-      <h1>URL Shortner</h1>
+      <h1>URL Shortener</h1>
 
-      <h2>Add a new Link</h2>
-      <label htmlFor="longUrl">Long URL:</label>
-      <input
-        type="text"
-        id="longUrl"
-        placeholder="Enter long URL"
-        value={longUrl}
-        onChange={(e) => setLongUrl(e.target.value)}
-      />
-      <button onClick={createLink}>Shorten URL</button>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/add-link">Add a new Link</Link>
+          </li>
+          <li>
+            <Link to="/get-links">Retrieve Links</Link>
+          </li>
+        </ul>
+      </nav>
 
-      <h2>Retrieve Links</h2>
-      <button onClick={getLinks}>Get Links</button>
+      <Routes>
+        {/* Use App component for the root path */}
+        <Route path="/" element={<Home />} />
 
-      <h2>Links:</h2>
-      <ul>
-        {links.map((link) => (
-          <li key={link.short_url}>{`${link.short_url}: ${link.long_url}`}</li>
-        ))}
-      </ul>
+        {/* Specify the appropriate component for each route */}
+        <Route path="/add-link" element={<AddLink createLink={createLink} />} />
+        <Route
+          path="/get-links"
+          element={<GetLinks getLinks={getLinks} links={links} />}
+        />
+      </Routes>
     </div>
   );
 };
+
+// Create a separate Home component
+const Home = () => (
+  <div>
+    {/* Content for the home page */}
+    <h2>Welcome to the Home Page!</h2>
+  </div>
+);
 
 export default App;
