@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import AddLink from "../../AddLink";
 import GetLinks from "../../GetLinks";
-// import './App.css'
+import RegisterUser from "../../RegisterUser";
+import LoginUser from "../../LoginUser";
+import "./App.css";
 
 const App = () => {
   const [longUrl, setLongUrl] = useState("");
@@ -64,13 +66,27 @@ const App = () => {
     <div>
       <h1>URL Shortener</h1>
 
-      <nav>
+      <nav className="nav_links">
         <ul>
           <li>
-            <Link to="/add-link">Add a new Link</Link>
+            <button>
+              <Link to="/add-link">Add a new Link</Link>
+            </button>
           </li>
           <li>
-            <Link to="/get-links">Retrieve Links</Link>
+            <button>
+              <Link to="/get-links">Retrieve Links</Link>
+            </button>
+          </li>
+          <li>
+            <button>
+              <Link to="/register">Register</Link>
+            </button>
+          </li>
+          <li>
+            <button>
+              <Link to="/login">Login</Link>
+            </button>
           </li>
         </ul>
       </nav>
@@ -85,6 +101,8 @@ const App = () => {
           path="/get-links"
           element={<GetLinks getLinks={getLinks} links={links} />}
         />
+        <Route path="/register" element={<RegisterUser />} />
+        <Route path="/login" element={<LoginUser />} />
       </Routes>
     </div>
   );
